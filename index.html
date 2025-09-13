@@ -6,16 +6,22 @@
   <title>Coach Chat</title>
   <style>
     :root{
-      --app-w: 820px;
+      --app-w: 860px;
       --bg:#f6f8fc; --panel:#ffffff; --text:#0f172a; --muted:#475569; --border:#e2e8f0;
-      --bubble-user:#ecfdf5; --bubble-coach:#f3f6ff; --accent:#2563eb; --accent2:#22c55e;
+      --bubble-user:#ecfdf5; --bubble-coach:#f3f6ff; --accent:#2563eb; --accent2:#22c55e; --blue:#2563eb;
     }
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,#f1f5f9,#ffffff);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
-    .app{max-width:var(--app-w);margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:24px 12px}
+    .app{max-width:var(--app-w);margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 
-    /* Simple layout – like the referenced demo (no header/labels/buttons) */
-    .chat{margin:0 auto;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--border);border-radius:14px;height:70vh;max-height:70vh;width:100%}
+    /* ===== Header (blue, like the reference) ===== */
+    header.topbar{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,#1d4ed8,#2563eb);color:#fff;border-bottom:1px solid rgba(255,255,255,.15)}
+    header.topbar .inner{max-width:var(--app-w);margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+    .brand{font-weight:700;letter-spacing:.2px}
+    .mode-badge{margin-left:auto;display:inline-block;background:#0ea5e9;color:#fff;padding:4px 10px;border-radius:9999px;font-size:12px;border:1px solid rgba(255,255,255,.35)}
+
+    /* ===== Chat layout (simple like the demo) ===== */
+    .chat{margin:16px auto;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--border);border-radius:14px;height:70vh;width:calc(100% - 24px)}
     .messages{padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto;flex:1}
     .msg{display:flex;width:100%}
     .msg.coach{justify-content:flex-start}
@@ -35,18 +41,17 @@
     .btn{border:1px solid #cbd5e1;background:#f8fafc;color:#0f172a;border-radius:12px;padding:10px 12px;cursor:pointer}
     .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;color:#fff}
     .small{font-size:12px;color:#64748b}
-    .chip{display:inline-block;font-size:12px;padding:6px 10px;margin:4px 6px 0 0;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;color:#3730a3}
-    .a-like{background:transparent;border:0;color:#1d4ed8;cursor:pointer;padding:0 4px;font:inherit;text-decoration:underline}
 
-    /* Hidden progress DOM for back-compat (not shown) */
-    header,.progress-wrap{display:none}
+    .chip{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;padding:6px 10px;margin:6px 8px 0 0;background:#eef2ff;border:1px solid #c7d2fe;border-radius:9999px;color:#3730a3}
+    .circle-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #93c5fd;background:#dbeafe;color:#1e40af;border-radius:9999px;padding:6px 10px;font-size:12px;cursor:pointer}
+    .circle-btn .dotc{width:8px;height:8px;border-radius:50%;background:#60a5fa;border:1px solid #2563eb}
 
     /* Print entire chat */
     @media print{
-      .input{display:none !important}
+      .input,header.topbar{display:none !important}
       body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
       .app{max-width:100%}
-      .chat{border:0;height:auto !important;max-height:none !important}
+      .chat{border:0;height:auto !important}
       .messages{overflow:visible !important;max-height:none !important}
       .msg{break-inside:avoid;page-break-inside:avoid}
       .bubble{border:1px solid #ccc}
@@ -58,6 +63,13 @@
 </head>
 <body>
   <div class="app">
+    <header class="topbar">
+      <div class="inner">
+        <div class="brand">Coach Chat</div>
+        <span class="mode-badge" title="interface mode">HTML</span>
+      </div>
+    </header>
+
     <section class="chat" role="region" aria-label="Coach Chat">
       <div class="messages" id="messages" role="log" aria-live="polite"></div>
       <div class="input">
@@ -139,7 +151,7 @@
   };
 
   /* ==================== STATE ==================== */
-  var STORAGE_KEY = 'coach-chat-v11';
+  var STORAGE_KEY = 'coach-chat-v12';
   var SAVED = {};
   try{ SAVED = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ SAVED = {}; }
   var SELECT_COUNT = 5;
@@ -232,18 +244,23 @@
   function questionFor(word){
     var base = state.eased[word.term] ? EASY_QUESTIONS[word.term] : QUESTIONS[word.term];
     var text = base || ('Talk about your eating habits and try to use "'+word.term+'".');
-    var link = '<button class="a-like small" data-action="easier" data-word="'+escapeHTML(word.term)+'">Make this question easier</button>';
-    var chip = '<span class="chip">'+escapeHTML(word.term)+'</span>';
-    return '<div>'+escapeHTML(text)+'</div><div class="small" style="margin-top:6px">Target word: '+chip+' · '+link+'</div>';
+    var changeBtn = '<button class="circle-btn" data-action="easier" data-word="'+escapeHTML(word.term)+'"><span class="dotc"></span> change question</button>';
+    var chip = '<span class="chip" title="target word">'+escapeHTML(word.term)+'</span>';
+    return '<div>'+escapeHTML(text)+'</div><div class="small" style="margin-top:6px">'+chip+changeBtn+'</div>';
   }
   function promptWord(){ var w=currentWord(); coachSayHTML(questionFor(w)); els.input.focus(); }
   function makeEasier(term){ if(!term) return; state.eased[term]=true; safeSave(); var last = els.messages.querySelectorAll('.msg.coach'); if(!last.length) return; var node = last[last.length-1]; var bubble = node.querySelector('.bubble'); if(!bubble) return; var word = state.words[state.index]; if(!word || word.term!==term) return; bubble.innerHTML = questionFor(word); }
 
   function finish(){ var practiced=state.words.map(function(w){return '<span class="chip">'+escapeHTML(w.term)+'</span>';}).join(''); var html='<div><strong>Nice work — all questions done!</strong></div><div class="small" style="margin-top:6px">Words covered:</div><div style="margin-top:6px">'+practiced+'</div><div class="small" style="margin-top:10px">Use your browser\'s Print to save as PDF, or copy the chat below.</div><div class="actions" style="margin-top:8px"><button class="btn" id="copy-chat">Copy chat</button></div>'; coachSayHTML(html); setTimeout(function(){ var copyBtn=document.getElementById('copy-chat'); if(copyBtn) copyBtn.addEventListener('click', copyChat); },0); }
 
-  function copyChat(){ var parts=[]; var nodes=els.messages.querySelectorAll('.msg'); Array.prototype.forEach.call(nodes,function(m){ if(m.classList.contains('typing')) return; var isCoach=m.classList.contains('coach'); var text=m.querySelector('.bubble')?m.querySelector('.bubble').innerText:''; if(text && text.trim()) parts.push((isCoach?'Coach: ':'You: ')+text.trim()); }); var all=parts.join('
+  function copyChat(){
+    var parts=[]; var nodes=els.messages.querySelectorAll('.msg');
+    Array.prototype.forEach.call(nodes,function(m){ if(m.classList.contains('typing')) return; var isCoach=m.classList.contains('coach'); var text=m.querySelector('.bubble')?m.querySelector('.bubble').innerText:''; if(text && text.trim()) parts.push((isCoach?'Coach: ':'You: ')+text.trim()); });
+    var all = parts.join('
 
-'); if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(all).then(function(){ showToast('Chat copied to clipboard'); }).catch(function(){ legacyCopy(all); }); } else { legacyCopy(all); } }
+');
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(all).then(function(){ showToast('Chat copied to clipboard'); }).catch(function(){ legacyCopy(all); }); } else { legacyCopy(all); }
+  }
   function legacyCopy(text){ var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Chat copied to clipboard'); }catch(e){ showToast('Copy failed'); } finally{ document.body.removeChild(ta); } }
 
   function handleSubmit(){ var w=currentWord(); var text=String(els.input.value||'').trim(); if(!text) return; userSay(text); els.input.value=''; var typing=showTyping(); setTimeout(function(){ typing.remove(); var analysis=analyzeAnswer(w,text); var feedback=analysis.ok?feedbackRight(w):feedbackWrong(analysis.notes); if(analysis.ok){ coachSayHTML(feedback); } else { coachSay(feedback); } state.attempts+=1; if(analysis.ok){ state.results[w.term]={sentence:text, ok:true}; nextWord(); safeSave(); var completed=Object.keys(state.results).length; if(completed===state.words.length){ finish(); } else { var t=showTyping(); setTimeout(function(){ t.remove(); promptWord(); }, 450); } } else { safeSave(); } }, 420); }
@@ -282,8 +299,16 @@
       assert(a.ok, 'Accepts adverbial variant for organic');
       a = analyzeAnswer({term:'consume', forms:['consume'], variants:['consumption']}, 'Sugar consumption is rising.');
       assert(a.ok, 'Accepts noun variant for consume');
-      // easier toggle renders
-      state.words=[{term:'diet'}]; state.index=0; state.eased={}; var html=questionFor({term:'diet'}); assert(/Make this question easier/.test(html), 'Easier link present'); state.eased['diet']=true; html=questionFor({term:'diet'}); assert(html.indexOf('Make this question easier')!==-1, 'Easier link remains visible');
+      // easier control present with exact text
+      state.words=[{term:'diet'}]; state.index=0; state.eased={}; var html=questionFor({term:'diet'});
+      assert(/change question/.test(html), 'Change question control present');
+      // newline join is escaped
+      var joined = ['Coach: A','You: B'].join('
+
+');
+      assert(joined.indexOf('
+
+')!==-1, 'Join uses escaped newlines');
       console.log('All self-tests passed.');
     }catch(e){ console.error('Self-test failed:', e.message); var warn=document.createElement('div'); warn.className='msg coach'; warn.innerHTML='<div class="bubble small">Self-test failed: '+escapeHTML(e.message)+'</div>'; els.messages.appendChild(warn); }
     finally{ console.groupEnd(); }

@@ -6,55 +6,57 @@
   <title>Coach Chat</title>
   <style>
     :root{
-      --app-w: 860px;
+      --app-w: 920px;
       --bg:#f6f8fc; --panel:#ffffff; --text:#0f172a; --muted:#475569; --border:#e2e8f0;
-      --bubble-user:#ecfdf5; --bubble-coach:#f3f6ff; --accent:#2563eb; --accent2:#22c55e; --blue:#2563eb;
+      --bubble-user:#ecfdf5; --bubble-coach:#f3f4f6; --accent:#2563eb; --accent2:#22c55e; --blue:#2563eb;
+      --chip-bg:#eef2ff; --chip-bd:#c7d2fe; --chip-fg:#3730a3;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#f1f5f9,#ffffff);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
-    .app{max-width:var(--app-w);margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+    html,body{height:100%}
+    body{margin:0;background:#f7f9fc;color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+    .app{max-width:var(--app-w);margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:16px 12px}
 
-    /* ===== Header (blue, like the reference) ===== */
-    header.topbar{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,#1d4ed8,#2563eb);color:#fff;border-bottom:1px solid rgba(255,255,255,.15)}
-    header.topbar .inner{max-width:var(--app-w);margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
-    .brand{font-weight:700;letter-spacing:.2px}
-    .mode-badge{margin-left:auto;display:inline-block;background:#0ea5e9;color:#fff;padding:4px 10px;border-radius:9999px;font-size:12px;border:1px solid rgba(255,255,255,.35)}
+    /* ===== Card with header like the screenshot ===== */
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 3px rgba(16,24,40,.04)}
+    .panel-hd{display:flex;align-items:center;gap:12px;padding:18px;border-bottom:1px solid var(--border)}
+    .panel-title{font-weight:700;font-size:20px;color:#0b1220}
+    .pill{margin-left:auto;background:#2563eb;color:#fff;border-radius:9999px;padding:4px 10px;font-size:12px;border:1px solid rgba(255,255,255,.35)}
 
-    /* ===== Chat layout (simple like the demo) ===== */
-    .chat{margin:16px auto;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--border);border-radius:14px;height:70vh;width:calc(100% - 24px)}
-    .messages{padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto;flex:1}
+    .panel-body{padding:16px}
+    .surface{background:#f3f4f6;border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;height:68vh}
+
+    .messages{padding:14px;display:flex;flex-direction:column;gap:12px;overflow:auto;flex:1}
     .msg{display:flex;width:100%}
     .msg.coach{justify-content:flex-start}
     .msg.user{justify-content:flex-end}
-    .bubble{max-width:78%;padding:10px 12px;border-radius:14px;border:1px solid var(--border);box-shadow:0 1px 0 rgba(0,0,0,.02)}
-    .coach .bubble{background:var(--bubble-coach)}
+    .bubble{max-width:78%;padding:10px 12px;border-radius:14px;border:1px solid var(--border);box-shadow:0 1px 0 rgba(0,0,0,.02);background:var(--bubble-coach)}
     .user .bubble{background:var(--bubble-user)}
 
     .typing .bubble{display:inline-flex;gap:6px;align-items:center}
     .dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;opacity:.6;animation:blink 1.4s infinite}
-    .dot:nth-child(2){animation-delay:.2s}
-    .dot:nth-child(3){animation-delay:.4s}
+    .dot:nth-child(2){animation-delay:.18s}
+    .dot:nth-child(3){animation-delay:.36s}
     @keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
 
-    .input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}
+    .input{display:flex;gap:10px;padding:12px;border-top:1px solid var(--border);background:#fff;border-radius:0 0 12px 12px}
     .input textarea{flex:1;resize:none;min-height:44px;max-height:120px;border-radius:12px;border:1px solid #cbd5e1;background:#fff;color:var(--text);padding:10px 12px}
-    .btn{border:1px solid #cbd5e1;background:#f8fafc;color:#0f172a;border-radius:12px;padding:10px 12px;cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;color:#fff}
-    .small{font-size:12px;color:#64748b}
+    .btn{border:1px solid #cbd5e1;background:#f8fafc;color:#0f172a;border-radius:12px;padding:10px 16px;cursor:pointer}
+    .btn.primary{background:#2563eb;border-color:#2563eb;color:#fff}
 
-    .chip{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;padding:6px 10px;margin:6px 8px 0 0;background:#eef2ff;border:1px solid #c7d2fe;border-radius:9999px;color:#3730a3}
-    .circle-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #93c5fd;background:#dbeafe;color:#1e40af;border-radius:9999px;padding:6px 10px;font-size:12px;cursor:pointer}
-    .circle-btn .dotc{width:8px;height:8px;border-radius:50%;background:#60a5fa;border:1px solid #2563eb}
+    .small{font-size:12px;color:#64748b}
+    .chip{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;padding:6px 10px;margin:6px 8px 0 0;background:var(--chip-bg);border:1px solid var(--chip-bd);border-radius:9999px;color:var(--chip-fg)}
+    .chip.ghost{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
 
     /* Print entire chat */
     @media print{
-      .input,header.topbar{display:none !important}
       body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      .app{max-width:100%}
-      .chat{border:0;height:auto !important}
+      .app{max-width:100%;padding:0}
+      .panel{border:0;border-radius:0;box-shadow:none}
+      .surface{height:auto}
       .messages{overflow:visible !important;max-height:none !important}
+      .input{display:none !important}
       .msg{break-inside:avoid;page-break-inside:avoid}
-      .bubble{border:1px solid #ccc}
+      .bubble{border:1px solid #ddd}
     }
 
     .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111827;border:1px solid #1f2937;color:#e5e7eb;padding:8px 12px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -63,97 +65,99 @@
 </head>
 <body>
   <div class="app">
-    <header class="topbar">
-      <div class="inner">
-        <div class="brand">Coach Chat</div>
-        <span class="mode-badge" title="interface mode">HTML</span>
+    <div class="panel" id="panel">
+      <div class="panel-hd">
+        <div class="panel-title">Coach Chat</div>
+        <div class="pill" id="practice-pill">Practice 0 / 5</div>
       </div>
-    </header>
-
-    <section class="chat" role="region" aria-label="Coach Chat">
-      <div class="messages" id="messages" role="log" aria-live="polite"></div>
-      <div class="input">
-        <textarea id="input" placeholder="Answer the question here… (Enter to send)" aria-label="Your response"></textarea>
-        <button class="btn primary" id="send">Send</button>
+      <div class="panel-body">
+        <div class="surface">
+          <div class="messages" id="messages" role="log" aria-live="polite"></div>
+          <div class="input">
+            <textarea id="input" placeholder="Type your message… (Enter to send)" aria-label="Your response"></textarea>
+            <button class="btn primary" id="send">Send</button>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
-  'use strict';
+  "use strict";
   /* ==================== DATA ==================== */
   var WORD_BANK = [
-    { term: 'diet', forms:['diet','diets'], variants:['dietary','dieting'], example:'I follow a balanced diet to stay healthy.' },
-    { term: 'junk food', phrase:'junk food', variants:['junk foods'], example:'In my city, people eat too much junk food.' },
-    { term: 'whole food', phrase:'whole food', variants:['whole foods'], example:'I try to cook with whole foods at home.' },
-    { term: 'food security', phrase:'food security', variants:[], example:'Drought can seriously affect food security.' },
-    { term: 'takeaway', forms:['takeaway','takeaways'], variants:['takeaways'], alsoPhrases:['take away','take-away','take-aways'], example:'I order a takeaway once a week.' },
-    { term: 'processed', forms:['processed'], variants:['processing','processed foods'], example:'Many students rely on processed meals because they are cheap.' },
-    { term: 'perishable', forms:['perishable','perishables'], variants:['perishability'], example:'Perishable goods should be refrigerated immediately.' },
-    { term: 'wholesome', forms:['wholesome'], variants:['wholesomeness','wholesomely'], example:'A wholesome breakfast keeps me energised.' },
-    { term: 'organic', forms:['organic'], variants:['organics','organically'], example:'I prefer organic vegetables when I can afford them.' },
-    { term: 'nutritious', forms:['nutritious'], variants:['nutrition','nutritional','nutritiously','nutritive'], example:'This soup is nutritious and comforting.' },
-    { term: 'consume', forms:['consume','consumes','consumed','consuming'], variants:['consumption','consumer','consumers','consumable','consumables'], example:'People consume too much sugar nowadays.' },
-    { term: 'to be tempted', phrase:'tempted to', variants:['temptation','tempted'], alsoForms:['tempted'], example:'I am tempted to buy crisps after work.' },
-    { term: 'to reduce', forms:['reduce','reduces','reduced','reducing'], variants:['reduction','reductions','reducible'], example:'I plan to reduce my salt intake this month.' },
-    { term: 'to sample', forms:['sample','samples','sampled','sampling'], variants:['sampler','samples'], example:'When I travel, I like to sample local dishes.' },
-    { term: 'to digest', forms:['digest','digests','digested','digesting'], variants:['digestion','digestive'], example:'Drinking warm tea helps me digest a heavy meal.' }
+    { term: "diet", forms:["diet","diets"], variants:["dietary","dieting"], example:"I follow a balanced diet to stay healthy." },
+    { term: "junk food", phrase:"junk food", variants:["junk foods"], example:"In my city, people eat too much junk food." },
+    { term: "whole food", phrase:"whole food", variants:["whole foods"], example:"I try to cook with whole foods at home." },
+    { term: "food security", phrase:"food security", variants:[], example:"Drought can seriously affect food security." },
+    { term: "takeaway", forms:["takeaway","takeaways"], variants:["takeaways"], alsoPhrases:["take away","take-away","take-aways"], example:"I order a takeaway once a week." },
+    { term: "processed", forms:["processed"], variants:["processing","processed foods"], example:"Many students rely on processed meals because they are cheap." },
+    { term: "perishable", forms:["perishable","perishables"], variants:["perishability"], example:"Perishable goods should be refrigerated immediately." },
+    { term: "wholesome", forms:["wholesome"], variants:["wholesomeness","wholesomely"], example:"A wholesome breakfast keeps me energised." },
+    { term: "organic", forms:["organic"], variants:["organics","organically"], example:"I prefer organic vegetables when I can afford them." },
+    { term: "nutritious", forms:["nutritious"], variants:["nutrition","nutritional","nutritiously","nutritive"], example:"This soup is nutritious and comforting." },
+    { term: "consume", forms:["consume","consumes","consumed","consuming"], variants:["consumption","consumer","consumers","consumable","consumables"], example:"People consume too much sugar nowadays." },
+    { term: "to be tempted", phrase:"tempted to", variants:["temptation","tempted"], alsoForms:["tempted"], example:"I am tempted to buy crisps after work." },
+    { term: "to reduce", forms:["reduce","reduces","reduced","reducing"], variants:["reduction","reductions","reducible"], example:"I plan to reduce my salt intake this month." },
+    { term: "to sample", forms:["sample","samples","sampled","sampling"], variants:["sampler","samples"], example:"When I travel, I like to sample local dishes." },
+    { term: "to digest", forms:["digest","digests","digested","digesting"], variants:["digestion","digestive"], example:"Drinking warm tea helps me digest a heavy meal." }
   ];
 
-  // IELTS-style (but unnamed) prompts and easier versions
+  // Food-topic prompts and easier versions (no IELTS word in UI)
   var QUESTIONS = {
-    'diet': 'How has your diet changed over the years, and what factors influenced those changes?',
-    'junk food': 'Why do you think some people prefer junk food even when they know it\'s unhealthy?',
-    'whole food': 'Do you think choosing whole foods makes a noticeable difference to health or energy? Why?',
-    'food security': 'In your view, what are the main causes of weak food security in some communities?',
-    'takeaway': 'How often do you order a takeaway, and what usually drives that decision?',
-    'processed': 'What are the advantages and disadvantages of relying on processed foods in busy lives?',
-    'perishable': 'Which perishable foods do you buy regularly, and how do you prevent waste?',
-    'wholesome': 'Describe a wholesome meal you enjoy. Why does it make you feel good?',
-    'organic': 'Do you prefer organic products in certain cases? Which ones and why?',
-    'nutritious': 'Can convenience food be genuinely nutritious in your experience? Give examples.',
-    'consume': 'Do people around you consume too much sugar or salt? What habits lead to that?',
-    'to be tempted': 'When are you most tempted to buy snacks you don\'t need, and how do you deal with that?',
-    'to reduce': 'If you wanted to reduce late-night snacking, what practical steps would you take first?',
-    'to sample': 'Tell me about a time you sampled a new dish or cuisine. What did you think of it?',
-    'to digest': 'After a heavy meal, what helps you digest comfortably? Share your routine.'
+    "diet": "How has your diet changed over the years, and what factors influenced those changes?",
+    "junk food": "Why do you think some people prefer junk food even when they know it's unhealthy?",
+    "whole food": "Do you think choosing whole foods makes a noticeable difference to health or energy? Why?",
+    "food security": "In your view, what are the main causes of weak food security in some communities?",
+    "takeaway": "How often do you order a takeaway, and what usually drives that decision?",
+    "processed": "What are the advantages and disadvantages of relying on processed foods in busy lives?",
+    "perishable": "Which perishable foods do you buy regularly, and how do you prevent waste?",
+    "wholesome": "Describe a wholesome meal you enjoy. Why does it make you feel good?",
+    "organic": "Do you prefer organic products in certain cases? Which ones and why?",
+    "nutritious": "Can convenience food be genuinely nutritious in your experience? Give examples.",
+    "consume": "Do people around you consume too much sugar or salt? What habits lead to that?",
+    "to be tempted": "When are you most tempted to buy snacks you don't need, and how do you deal with that?",
+    "to reduce": "If you wanted to reduce late-night snacking, what practical steps would you take first?",
+    "to sample": "Tell me about a time you sampled a new dish or cuisine. What did you think of it?",
+    "to digest": "After a heavy meal, what helps you digest comfortably? Share your routine."
   };
   var EASY_QUESTIONS = {
-    'diet': 'What kind of diet do you follow now? Why?',
-    'junk food': 'Do you eat junk food often? Why or why not?',
-    'whole food': 'When do you choose whole foods?',
-    'food security': 'Is food affordable and available where you live?',
-    'takeaway': 'How often do you get a takeaway?',
-    'processed': 'When do you eat processed foods?',
-    'perishable': 'What perishable foods do you buy each week?',
-    'wholesome': 'What is a wholesome meal for you?',
-    'organic': 'Do you buy organic food? Why?',
-    'nutritious': 'What is a nutritious snack you like?',
-    'consume': 'Do people you know consume too much sugar?',
-    'to be tempted': 'When are you tempted to buy snacks?',
-    'to reduce': 'How would you reduce late-night snacks?',
-    'to sample': 'Tell me about a new dish you sampled.',
-    'to digest': 'What helps you digest after a big meal?'
+    "diet": "What kind of diet do you follow now? Why?",
+    "junk food": "Do you eat junk food often? Why or why not?",
+    "whole food": "When do you choose whole foods?",
+    "food security": "Is food affordable and available where you live?",
+    "takeaway": "How often do you get a takeaway?",
+    "processed": "When do you eat processed foods?",
+    "perishable": "What perishable foods do you buy each week?",
+    "wholesome": "What is a wholesome meal for you?",
+    "organic": "Do you buy organic food? Why?",
+    "nutritious": "What is a nutritious snack you like?",
+    "consume": "Do people you know consume too much sugar?",
+    "to be tempted": "When are you tempted to buy snacks?",
+    "to reduce": "How would you reduce late-night snacks?",
+    "to sample": "Tell me about a new dish you sampled.",
+    "to digest": "What helps you digest after a big meal?"
   };
 
-  var PRAISES = [ 'Great answer!', 'Nice response!', 'Well done!', 'Excellent!', 'That sounds natural!' ];
-  var WRONG_TEMPLATES = [ 'Almost there -', 'Good try -', 'Close, but not quite.', 'Let\'s tweak it -', 'Small fix needed -' ];
+  var PRAISES = [ "Great answer!", "Nice response!", "Well done!", "Excellent!", "That sounds natural!" ];
+  var WRONG_TEMPLATES = [ "Almost there -", "Good try -", "Close, but not quite.", "Let's tweak it -", "Small fix needed -" ];
 
   /* ==================== ELEMENTS ==================== */
   var els = {
-    messages: document.getElementById('messages'),
-    input: document.getElementById('input'),
-    send: document.getElementById('send'),
-    toast: document.getElementById('toast')
+    messages: document.getElementById("messages"),
+    input: document.getElementById("input"),
+    send: document.getElementById("send"),
+    toast: document.getElementById("toast"),
+    pill: document.getElementById("practice-pill")
   };
 
   /* ==================== STATE ==================== */
-  var STORAGE_KEY = 'coach-chat-v12';
+  var STORAGE_KEY = "coach-chat-v15"; // bump to avoid stale state causing parse errors
   var SAVED = {};
-  try{ SAVED = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ SAVED = {}; }
+  try{ SAVED = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }catch(e){ SAVED = {}; }
   var SELECT_COUNT = 5;
   var state = { words: [], index: 0, attempts: 0, results: {}, eased: {} };
 
@@ -164,10 +168,32 @@
   function escapeHTML(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-  function tokensOf(str){ var s = String(str||'').toLowerCase().replace(/-/g,' '); var out=[], buf=''; for(var k=0;k<s.length;k++){ var ch=s[k]; var ok=(ch>='a'&&ch<='z')||ch==="'"; if(ok){ buf+=ch; } else { if(buf){ out.push(buf); buf=''; } } } if(buf) out.push(buf); return out; }
-  function endsWithPunct(s){ var t=String(s||'').trim(); if(!t) return false; var ch=t[t.length-1]; return ".!?".indexOf(ch)!==-1; }
-  function hasAnyVerb(tokens){ var helpers={am:1,is:1,are:1,was:1,were:1,be:1,been:1,being:1,do:1,does:1,did:1,can:1,could:1,may:1,might:1,must:1,shall:1,should:1,will:1,would:1,have:1,has:1,had:1}; for(var i=0;i<tokens.length;i++){ var t=tokens[i]; if(helpers[t]) return true; if(t.indexOf("n't")!==-1||t==='not') return true; if(t.length>3 && (t.slice(-2)==='ed'||t.slice(-3)==='ing'||t.slice(-1)==='s')) return true; } return false; }
-  var SUFFIXES=['s','es','ed','ing','ly','al','ally','ness','ment','ion','tion','sion','ity','ive','ous','er','ers','able','ably'];
+  function tokensOf(str){ var s = String(str||"").toLowerCase().replace(/-/g," "); var out=[], buf=""; for(var k=0;k<s.length;k++){ var ch=s[k]; var ok=(ch>='a'&&ch<='z')||ch==="'"; if(ok){ buf+=ch; } else { if(buf){ out.push(buf); buf=""; } } } if(buf) out.push(buf); return out; }
+  function endsWithPunct(s){ var t=String(s||"").trim(); if(!t) return false; var ch=t[t.length-1]; return ".!?".indexOf(ch)!==-1; }
+
+  // Expanded verb detector: auxiliaries/modals, common base verbs, and patterns (e.g., "to + verb")
+  var HELPERS={am:1,is:1,are:1,was:1,were:1,be:1,been:1,being:1,do:1,does:1,did:1,can:1,could:1,may:1,might:1,must:1,shall:1,should:1,will:1,would:1,have:1,has:1,had:1};
+  var BASE_VERBS={
+    help:1, eat:1, shop:1, cook:1, order:1, prefer:1, sample:1, digest:1, reduce:1, consume:1, avoid:1, buy:1, choose:1, think:1, feel:1, enjoy:1, like:1, plan:1, consider:1, believe:1, need:1, want:1, keep:1, make:1, take:1, get:1, give:1, go:1, see:1, find:1, try:1, improve:1, support:1, affect:1, impact:1, change:1, increase:1, decrease:1, grow:1, rise:1, fall:1, snack:1, boil:1, bake:1, drink:1
+  };
+  function looksLikeVerb(token){
+    if(HELPERS[token]) return true;
+    if(token.indexOf("n't")!==-1 || token==='not') return true; // negatives allowed
+    if(token.length>3 && (token.slice(-2)==='ed' || token.slice(-3)==='ing' || token.slice(-1)==='s')) return true; // inflections
+    if(BASE_VERBS[token]) return true; // common base forms
+    return false;
+  }
+  function hasAnyVerb(tokens){
+    for(var i=0;i<tokens.length;i++){
+      var t=tokens[i];
+      if(looksLikeVerb(t)) return true;
+      // "to + verb" pattern e.g., "tempted to buy"
+      if(t==='to' && i+1<tokens.length){ var nxt=tokens[i+1]; if(nxt && (BASE_VERBS[nxt] || (nxt.length>2 && /[a-z]/.test(nxt)))) return true; }
+    }
+    return false;
+  }
+
+  var SUFFIXES=["s","es","ed","ing","ly","al","ally","ness","ment","ion","tion","sion","ity","ive","ous","er","ers","able","ably"];
   function morphMatches(token, base){ if(token===base) return true; for(var i=0;i<SUFFIXES.length;i++){ if(token===base+SUFFIXES[i]) return true; } return false; }
 
   /* ==================== SELECTION ==================== */
@@ -241,29 +267,45 @@
   function feedbackRight(word){ var praise=pick(PRAISES); var example=word.example?('<div class="small" style="margin-top:6px">Sample: <code>'+escapeHTML(word.example)+'</code></div>'):''; return '<div>'+escapeHTML(praise)+' - correct</div>'+example; }
 
   /* ==================== FLOW ==================== */
+  function updatePracticePill(){ var done=Object.keys(state.results).length; els.pill.textContent = 'Practice '+done+' / '+state.words.length; }
   function questionFor(word){
     var base = state.eased[word.term] ? EASY_QUESTIONS[word.term] : QUESTIONS[word.term];
     var text = base || ('Talk about your eating habits and try to use "'+word.term+'".');
-    var changeBtn = '<button class="circle-btn" data-action="easier" data-word="'+escapeHTML(word.term)+'"><span class="dotc"></span> change question</button>';
+    var changeBtn = '<button class="chip ghost" data-action="easier" data-word="'+escapeHTML(word.term)+'"><span>Change question</span></button>';
     var chip = '<span class="chip" title="target word">'+escapeHTML(word.term)+'</span>';
     return '<div>'+escapeHTML(text)+'</div><div class="small" style="margin-top:6px">'+chip+changeBtn+'</div>';
   }
   function promptWord(){ var w=currentWord(); coachSayHTML(questionFor(w)); els.input.focus(); }
   function makeEasier(term){ if(!term) return; state.eased[term]=true; safeSave(); var last = els.messages.querySelectorAll('.msg.coach'); if(!last.length) return; var node = last[last.length-1]; var bubble = node.querySelector('.bubble'); if(!bubble) return; var word = state.words[state.index]; if(!word || word.term!==term) return; bubble.innerHTML = questionFor(word); }
 
-  function finish(){ var practiced=state.words.map(function(w){return '<span class="chip">'+escapeHTML(w.term)+'</span>';}).join(''); var html='<div><strong>Nice work — all questions done!</strong></div><div class="small" style="margin-top:6px">Words covered:</div><div style="margin-top:6px">'+practiced+'</div><div class="small" style="margin-top:10px">Use your browser\'s Print to save as PDF, or copy the chat below.</div><div class="actions" style="margin-top:8px"><button class="btn" id="copy-chat">Copy chat</button></div>'; coachSayHTML(html); setTimeout(function(){ var copyBtn=document.getElementById('copy-chat'); if(copyBtn) copyBtn.addEventListener('click', copyChat); },0); }
+  function finish(){
+    updatePracticePill();
+    var practiced=state.words.map(function(w){return '<span class="chip">'+escapeHTML(w.term)+'</span>';}).join('');
+    var html='<div><strong>Nice work — all questions done!</strong></div>'+
+             '<div class="small" style="margin-top:6px">Words covered:</div>'+
+             '<div style="margin-top:6px">'+practiced+'</div>'+
+             '<div class="small" style="margin-top:10px">Use your browser\'s Print to save as PDF, or copy the chat below.</div>'+
+             '<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">'+
+               '<button class="btn" id="copy-chat">Copy chat</button>'+ 
+               '<button class="btn" id="export-pdf">Export PDF</button>'+ 
+             '</div>';
+    coachSayHTML(html);
+    setTimeout(function(){
+      var copyBtn=document.getElementById('copy-chat'); var pdfBtn=document.getElementById('export-pdf');
+      if(copyBtn) copyBtn.addEventListener('click', copyChat);
+      if(pdfBtn) pdfBtn.addEventListener('click', function(){ try{ window.print(); }catch(e){ showToast('Use your browser\'s print to save as PDF.'); } });
+    },0);
+  }
 
   function copyChat(){
     var parts=[]; var nodes=els.messages.querySelectorAll('.msg');
     Array.prototype.forEach.call(nodes,function(m){ if(m.classList.contains('typing')) return; var isCoach=m.classList.contains('coach'); var text=m.querySelector('.bubble')?m.querySelector('.bubble').innerText:''; if(text && text.trim()) parts.push((isCoach?'Coach: ':'You: ')+text.trim()); });
-    var all = parts.join('
-
-');
+    var all = parts.join('\n\n');
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(all).then(function(){ showToast('Chat copied to clipboard'); }).catch(function(){ legacyCopy(all); }); } else { legacyCopy(all); }
   }
   function legacyCopy(text){ var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Chat copied to clipboard'); }catch(e){ showToast('Copy failed'); } finally{ document.body.removeChild(ta); } }
 
-  function handleSubmit(){ var w=currentWord(); var text=String(els.input.value||'').trim(); if(!text) return; userSay(text); els.input.value=''; var typing=showTyping(); setTimeout(function(){ typing.remove(); var analysis=analyzeAnswer(w,text); var feedback=analysis.ok?feedbackRight(w):feedbackWrong(analysis.notes); if(analysis.ok){ coachSayHTML(feedback); } else { coachSay(feedback); } state.attempts+=1; if(analysis.ok){ state.results[w.term]={sentence:text, ok:true}; nextWord(); safeSave(); var completed=Object.keys(state.results).length; if(completed===state.words.length){ finish(); } else { var t=showTyping(); setTimeout(function(){ t.remove(); promptWord(); }, 450); } } else { safeSave(); } }, 420); }
+  function handleSubmit(){ var w=currentWord(); var text=String(els.input.value||'').trim(); if(!text) return; userSay(text); els.input.value=''; var typing=showTyping(); setTimeout(function(){ typing.remove(); var analysis=analyzeAnswer(w,text); var feedback=analysis.ok?feedbackRight(w):feedbackWrong(analysis.notes); if(analysis.ok){ coachSayHTML(feedback); } else { coachSay(feedback); } state.attempts+=1; if(analysis.ok){ state.results[w.term]={sentence:text, ok:true}; nextWord(); safeSave(); updatePracticePill(); var completed=Object.keys(state.results).length; if(completed===state.words.length){ finish(); } else { var t=showTyping(); setTimeout(function(){ t.remove(); promptWord(); }, 420); } } else { safeSave(); } }, 400); }
 
   function currentWord(){ return state.words[state.index]; }
   function nextWord(){ for(var i=0;i<state.words.length;i++){ var idx=(state.index+1+i)%state.words.length; if(!state.results[state.words[idx].term]){ state.index=idx; return; } } }
@@ -284,7 +326,7 @@
       assert(onTaskFor({phrase:'tempted to'}, 'I was tempted to buy cake.'), 'onTask tempted to');
       // acceptance: >=3 words + punctuation + verb (aux/neg ok)
       var a = analyzeAnswer({term:'nutritious', forms:['nutritious']}, 'Nutritious meals help.');
-      assert(a.ok, 'Accepts three words with a verb and punctuation');
+      assert(a.ok, 'Accepts three words with a verb and punctuation (base verb)');
       a = analyzeAnswer({term:'diet', forms:['diet','diets']}, 'Is a diet helpful?');
       assert(a.ok, 'Accepts auxiliary verb questions');
       a = analyzeAnswer({term:'junk food', phrase:'junk food'}, 'I don\'t eat junk food.');
@@ -299,16 +341,18 @@
       assert(a.ok, 'Accepts adverbial variant for organic');
       a = analyzeAnswer({term:'consume', forms:['consume'], variants:['consumption']}, 'Sugar consumption is rising.');
       assert(a.ok, 'Accepts noun variant for consume');
-      // easier control present with exact text
+      // punctuation required
+      a = analyzeAnswer({term:'diet', forms:['diet','diets']}, 'I follow a healthy diet');
+      assert(!a.ok, 'Requires sentence-ending punctuation');
+      // easier control label present
       state.words=[{term:'diet'}]; state.index=0; state.eased={}; var html=questionFor({term:'diet'});
-      assert(/change question/.test(html), 'Change question control present');
-      // newline join is escaped
-      var joined = ['Coach: A','You: B'].join('
-
-');
-      assert(joined.indexOf('
-
-')!==-1, 'Join uses escaped newlines');
+      assert(/Change question/.test(html), 'Change question control present');
+      // pill updates
+      state.words=[{term:'diet'},{term:'junk food'},{term:'organic'},{term:'wholesome'},{term:'consume'}]; state.results={'diet':{ok:true}}; updatePracticePill();
+      assert(els.pill.textContent.indexOf('Practice')===0, 'Practice pill updates');
+      // newline join is escaped (no raw line breaks in string literal)
+      var joined = ['Coach: A','You: B'].join('\n\n');
+      assert(joined.indexOf('\n\n')!==-1, 'Join uses escaped newlines');
       console.log('All self-tests passed.');
     }catch(e){ console.error('Self-test failed:', e.message); var warn=document.createElement('div'); warn.className='msg coach'; warn.innerHTML='<div class="bubble small">Self-test failed: '+escapeHTML(e.message)+'</div>'; els.messages.appendChild(warn); }
     finally{ console.groupEnd(); }
@@ -317,6 +361,7 @@
   /* ==================== INIT ==================== */
   function init(){
     loadOrSelect();
+    updatePracticePill();
     coachSay('I\'ll ask short food-topic questions. Try to use the target word in any natural form. I\'ll mark it correct if your answer uses the word, has at least three words, ends with punctuation, and includes any verb (questions and negatives are fine).');
     promptWord();
     runSelfTests();

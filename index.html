@@ -154,7 +154,7 @@
   };
 
   /* ==================== STATE ==================== */
-  var STORAGE_KEY = 'coach-chat-v4';
+  var STORAGE_KEY = 'coach-chat-v4b';
   var SAVED = {};
   try{ SAVED = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ SAVED = {}; }
   var SELECT_COUNT = 5;
@@ -173,7 +173,7 @@
   function escapeHTML(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-  // Tokenization + verb heuristic (ASCII only to avoid encoding issues)
+  // Tokenization + verb heuristic (ASCII only)
   function tokensOf(str){
     var s = String(str||'').toLowerCase().replace(/-/g,' ');
     var out=[], buf='';
@@ -214,7 +214,12 @@
     var wrap = document.createElement('div'); wrap.className = 'msg ' + kind;
     var avatar = document.createElement('div'); avatar.className = 'avatar'; avatar.textContent = (kind==='coach' ? 'C' : 'U');
     var bubble = document.createElement('div'); bubble.className = 'bubble';
-    bubble.innerHTML = (typeof html === 'string') ? html : String(html);
+    // Defensive: escape if suspicious tags sneak in
+    if(typeof html === 'string' && /<\s*script/i.test(html)){
+      bubble.innerHTML = '<div>' + escapeHTML(html) + '</div>';
+    } else {
+      bubble.innerHTML = (typeof html === 'string') ? html : String(html);
+    }
     if(kind==='user'){ wrap.appendChild(bubble); wrap.appendChild(avatar); } else { wrap.appendChild(avatar); wrap.appendChild(bubble); }
     els.messages.appendChild(wrap); els.messages.scrollTop = els.messages.scrollHeight; return wrap;
   }
@@ -320,7 +325,7 @@
   function feedbackRight(word){
     var praise = pick(PRAISES);
     var example = word.example ? ('<div class="small" style="margin-top:6px">Sample: <code>' + escapeHTML(word.example) + '</code></div>') : '';
-    return '<div>' + escapeHTML(praise) + ' ✅</div>' + example;
+    return '<div>' + escapeHTML(praise) + ' - correct</div>' + example;
   }
 
   /* ==================== FLOW ==================== */
@@ -418,9 +423,9 @@
       // whole foods adjacency with verb
       a = analyzeAnswer({term:'whole food', forms:null, phrase:'whole food'}, 'Whole foods are great.');
       assert(a.ok, 'Accepts whole foods plus verb');
-      // copy join test
-      var joined = ['Coach: A','You: B'].join('\n\n');
-      assert(joined.indexOf('\n\n')!==-1, 'Join uses escaped newlines');
+      // copy join test (must use escaped newlines)
+      var joined = ['Coach: A','You: B'].join('\\n\\n');
+      assert(joined.indexOf('\\n\\n')!==-1, 'Join uses escaped newlines');
       // steps render
       buildSteps(5); var dots = els.steps.querySelectorAll('.dotstep');
       assert(dots.length === 9 || dots.length === 5, 'Steps and spacers rendered');

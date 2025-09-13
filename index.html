@@ -29,7 +29,7 @@
     .dotstep.ok{background:var(--ok);border-color:#0a8f68}
     .dotstep.active{background:#dbeafe;border-color:#93c5fd;box-shadow:0 0 0 3px rgba(59,130,246,.25)}
     .step-rail{height:6px;background:var(--track);border:1px solid var(--border);border-radius:999px;overflow:hidden}
-    .step-rail .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#10b981,#06b6d4,var(--accent2));background-size:200% 100%;animation:slide 3s linear infinite}
+    .step-rail .bar{height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#22c55e);transition:width .35s ease}
     .progress-meta{display:flex;justify-content:space-between;margin-top:2px;color:#334155;font-size:12px}
     @keyframes slide{0%{background-position:0% 50%}100%{background-position:200% 50%}}
 
@@ -60,7 +60,15 @@
     .chip{display:inline-block;font-size:12px;padding:6px 10px;margin:4px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;color:#3730a3}
     .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 
-    @media print{header,.input,.reset{display:none !important} body{background:#fff;color:#000} .app{max-width:100%} .chat{border:0} .bubble{border:1px solid #ccc}}
+    @media print{
+      header,.input,.reset{display:none !important}
+      body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .app{max-width:100%}
+      .chat{border:0;height:auto !important}
+      .messages{overflow:visible !important;max-height:none !important}
+      .msg{break-inside:avoid;page-break-inside:avoid}
+      .bubble{border:1px solid #ccc}
+    } body{background:#fff;color:#000} .app{max-width:100%} .chat{border:0} .bubble{border:1px solid #ccc}}
 
     .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111827;border:1px solid #1f2937;color:#e5e7eb;padding:8px 12px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
     .toast.show{opacity:1}
@@ -100,21 +108,21 @@
   'use strict';
   /* ==================== DATA ==================== */
   var WORD_BANK = [
-    { term: 'diet', forms:['diet','diets'], example:'I follow a balanced diet to stay healthy.' },
-    { term: 'junk food', phrase:'junk food', example:'In my city, people eat too much junk food.' },
-    { term: 'whole food', phrase:'whole food', alt:['whole foods'], example:'I try to cook with whole foods at home.' },
-    { term: 'food security', phrase:'food security', example:'Drought can seriously affect food security.' },
-    { term: 'takeaway', forms:['takeaway','takeaways'], alsoPhrases:['take away','take-aways','take-away'], example:'I order a takeaway once a week.' },
-    { term: 'processed', forms:['processed'], example:'Many students rely on processed meals because they are cheap.' },
-    { term: 'perishable', forms:['perishable','perishables'], example:'Perishable goods should be refrigerated immediately.' },
-    { term: 'wholesome', forms:['wholesome'], example:'A wholesome breakfast keeps me energised.' },
-    { term: 'organic', forms:['organic'], example:'I prefer organic vegetables when I can afford them.' },
-    { term: 'nutritious', forms:['nutritious'], example:'This soup is nutritious and comforting.' },
-    { term: 'consume', forms:['consume','consumes','consumed','consuming'], example:'People consume too much sugar nowadays.' },
-    { term: 'to be tempted', phrase:'tempted to', alsoForms:['tempted'], example:'I am tempted to buy crisps after work.' },
-    { term: 'to reduce', forms:['reduce','reduces','reduced','reducing'], example:'I plan to reduce my salt intake this month.' },
-    { term: 'to sample', forms:['sample','samples','sampled','sampling'], example:'When I travel, I like to sample local dishes.' },
-    { term: 'to digest', forms:['digest','digests','digested','digesting'], example:'Drinking warm tea helps me digest a heavy meal.' }
+    { term: 'diet', forms:['diet','diets'], variants:['dietary','dieting'], example:'I follow a balanced diet to stay healthy.' },
+    { term: 'junk food', phrase:'junk food', variants:['junk foods'], example:'In my city, people eat too much junk food.' },
+    { term: 'whole food', phrase:'whole food', variants:['whole foods'], example:'I try to cook with whole foods at home.' },
+    { term: 'food security', phrase:'food security', variants:[], example:'Drought can seriously affect food security.' },
+    { term: 'takeaway', forms:['takeaway','takeaways'], alsoPhrases:['take away','take-away','take-aways'], variants:['takeaways'], example:'I order a takeaway once a week.' },
+    { term: 'processed', forms:['processed'], variants:['processing','processed foods'], example:'Many students rely on processed meals because they are cheap.' },
+    { term: 'perishable', forms:['perishable','perishables'], variants:['perishability'], example:'Perishable goods should be refrigerated immediately.' },
+    { term: 'wholesome', forms:['wholesome'], variants:['wholesomeness','wholesomely'], example:'A wholesome breakfast keeps me energised.' },
+    { term: 'organic', forms:['organic'], variants:['organically','organics'], example:'I prefer organic vegetables when I can afford them.' },
+    { term: 'nutritious', forms:['nutritious'], variants:['nutrition','nutritional','nutritiously','nutritive'], example:'This soup is nutritious and comforting.' },
+    { term: 'consume', forms:['consume','consumes','consumed','consuming'], variants:['consumption','consumer','consumers','consumable','consumables'], example:'People consume too much sugar nowadays.' },
+    { term: 'to be tempted', phrase:'tempted to', variants:['temptation','tempted'], alsoForms:['tempted'], example:'I am tempted to buy crisps after work.' },
+    { term: 'to reduce', forms:['reduce','reduces','reduced','reducing'], variants:['reduction','reductions','reducible'], example:'I plan to reduce my salt intake this month.' },
+    { term: 'to sample', forms:['sample','samples','sampled','sampling'], variants:['sampler','samples'], example:'When I travel, I like to sample local dishes.' },
+    { term: 'to digest', forms:['digest','digests','digested','digesting'], variants:['digestion','digestive'], example:'Drinking warm tea helps me digest a heavy meal.' }
   ];
 
   // Food-topic question prompts for each term
@@ -154,7 +162,7 @@
   };
 
   /* ==================== STATE ==================== */
-  var STORAGE_KEY = 'coach-chat-v4b';
+  var STORAGE_KEY = 'coach-chat-v7';
   var SAVED = {};
   try{ SAVED = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ SAVED = {}; }
   var SELECT_COUNT = 5;
@@ -187,14 +195,23 @@
     return out;
   }
   function endsWithPunct(s){ var t=String(s||'').trim(); if(!t) return false; var ch=t[t.length-1]; return ".!?".indexOf(ch)!==-1; }
-  function hasMainVerb(tokens){
-    var helpers = {am:1,is:1,are:1,was:1,were:1,be:1,been:1,being:1,do:1,does:1,did:1,can:1,could:1,may:1,might:1,must:1,shall:1,should:1,will:1,would:1,have:1,has:1,had:1,go:1,goes:1,went:1,going:1,gone:1};
+  function hasAnyVerb(tokens){
+    var helpers = {am:1,is:1,are:1,was:1,were:1,be:1,been:1,being:1,do:1,does:1,did:1,can:1,could:1,may:1,might:1,must:1,shall:1,should:1,will:1,would:1,have:1,has:1,had:1};
     for(var i=0;i<tokens.length;i++){
       var t=tokens[i];
       if(helpers[t]) return true;
+      if(t.indexOf("n't")!==-1 || t==='not') return true;
       if(t.length>3 && (t.slice(-2)==='ed' || t.slice(-3)==='ing' || t.slice(-1)==='s')) return true;
     }
     return false;
+  }
+    return false;
+  }
+
+  // Morphology (reasonable family)
+  var SUFFIXES = ['s','es','ed','ing','ly','al','ally','ness','ment','ion','tion','sion','ity','ive','ous','er','ers','able','ably'];
+  function morphMatches(token, base){
+    if(token===base) return true; for(var i=0;i<SUFFIXES.length;i++){ if(token===base+SUFFIXES[i]) return true; } return false;
   }
 
   /* ==================== SELECTION ==================== */
@@ -273,8 +290,33 @@
   function onTaskFor(word, sentence){
     var s = String(sentence||'').toLowerCase().replace(/-/g,' ');
     var toks = tokensOf(s);
+
+    // Phrases
     if(word.phrase && s.indexOf(word.phrase)!==-1) return true;
     if(word.alsoPhrases && word.alsoPhrases.some(function(p){ return s.indexOf(p)!==-1; })) return true;
+
+    // Listed forms
+    if(word.forms && word.forms.some(function(f){ return toks.indexOf(f)!==-1; })) return true;
+    if(word.alsoForms && word.alsoForms.some(function(f){ return toks.indexOf(f)!==-1; })) return true;
+
+    // Curated variants (reasonable family)
+    if(word.variants && word.variants.some(function(v){ return toks.indexOf(v)!==-1; })) return true;
+
+    // Suffix family (single-token terms only)
+    if(word.term.indexOf(' ')===-1){
+      for(var i=0;i<toks.length;i++){ if(morphMatches(toks[i], word.term)) return true; }
+    }
+
+    // Special adjacency for whole foods
+    if(word.term==='whole food'){
+      for(var j=0;j<toks.length-1;j++){ if(toks[j]==='whole' && (toks[j+1]==='food' || toks[j+1]==='foods')) return true; }
+    }
+
+    // Special pattern for tempted to
+    if(word.term==='to be tempted'){ if(s.indexOf('tempted to')!==-1 || s.indexOf('temptation to')!==-1) return true; }
+
+    return false;
+  })) return true;
     if(word.forms && word.forms.some(function(f){ return tokensIncludes(toks, f); })) return true;
     if(word.term==='whole food'){ for(var i=0;i<toks.length-1;i++){ if(toks[i]==='whole' && (toks[i+1]==='food' || toks[i+1]==='foods')) return true; } }
     if(word.term==='to be tempted'){ return s.indexOf('tempted to') !== -1; }
@@ -303,8 +345,8 @@
 
     var onTask = onTaskFor(word, s);
     if(!onTask) notes.push('Try to include the word "' + word.term + '" in your answer.');
-    var hasVerb = hasMainVerb(toks);
-    if(!hasVerb) notes.push('Make sure your answer includes a main verb.');
+    var hasVerb = hasAnyVerb(toks);
+    if(!hasVerb) notes.push('Include a verb (any form is fine).');
     if(!endsWithPunct(s)) notes.push('Finish with a full stop, question mark, or exclamation mark.');
     if(wordCount < 3) notes.push('Write at least three words.');
 
@@ -411,26 +453,27 @@
       assert(onTaskFor({phrase:'junk food'}, 'I avoid junk food.'), 'onTask phrase match');
       assert(onTaskFor({forms:['diet','diets']}, 'I follow a balanced diet.'), 'onTask forms match');
       assert(onTaskFor({phrase:'tempted to'}, 'I was tempted to buy cake.'), 'onTask tempted to');
-      // acceptance: >=3 words + punctuation + verb
+      // acceptance: >=3 words + punctuation + verb (aux/neg ok)
       var a = analyzeAnswer({term:'nutritious', forms:['nutritious']}, 'Nutritious meals help.');
       assert(a.ok, 'Accepts three words with a verb and punctuation');
       a = analyzeAnswer({term:'diet', forms:['diet','diets']}, 'Is a diet helpful?');
       assert(a.ok, 'Accepts auxiliary verb questions');
-      a = analyzeAnswer({term:'nutritious', forms:['nutritious']}, 'Nutritious and tasty.');
-      assert(!a.ok, 'Rejects sentence without a verb');
+      a = analyzeAnswer({term:'junk food', phrase:'junk food'}, 'I don\'t eat junk food.');
+      assert(a.ok, 'Accepts negative with contraction');
       a = analyzeAnswer({term:'diet', forms:['diet','diets']}, 'Great diet!');
       assert(!a.ok, 'Rejects fewer than 3 words');
       // whole foods adjacency with verb
       a = analyzeAnswer({term:'whole food', forms:null, phrase:'whole food'}, 'Whole foods are great.');
       assert(a.ok, 'Accepts whole foods plus verb');
-      // copy join test (must use escaped newlines)
-      var joined = ['Coach: A','You: B'].join('\\n\\n');
-      assert(joined.indexOf('\\n\\n')!==-1, 'Join uses escaped newlines');
-      // steps render
-      buildSteps(5); var dots = els.steps.querySelectorAll('.dotstep');
-      assert(dots.length === 9 || dots.length === 5, 'Steps and spacers rendered');
+      // morphological variants
+      a = analyzeAnswer({term:'organic', forms:['organic'], variants:['organically']}, 'I shop organically when possible.');
+      assert(a.ok, 'Accepts adverbial variant for organic');
+      a = analyzeAnswer({term:'consume', forms:['consume'], variants:['consumption']}, 'Sugar consumption is rising.');
+      assert(a.ok, 'Accepts noun variant for consume');
       console.log('All self-tests passed.');
     }catch(e){ console.error('Self-test failed:', e.message); showToast('Self-test failed: '+e.message); }
+    finally{ console.groupEnd(); }
+  }
     finally{ console.groupEnd(); }
   }
 

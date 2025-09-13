@@ -74,6 +74,7 @@
     .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111827;border:1px solid #1f2937;color:#e5e7eb;padding:8px 12px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
     .toast.show{opacity:1}
   </style>
+<style>header{display:none}.progress-wrap{display:none}</style>
 </head>
 <body>
   <div class="app">
@@ -128,20 +129,20 @@
 
   // Food-topic question prompts (meaningful, specific)
   var QUESTIONS = {
-    'diet': 'What kind of diet do you follow at the moment, and how does it fit your daily routine? Give details.',
-    'junk food': 'Do people around you rely on junk food? Why does it appeal to them, and what are the downsides?',
-    'whole food': 'When do you choose whole foods over convenience options? Describe a recent meal and why you chose it.',
-    'food security': 'What issues affect food security where you live (cost, climate, transport, policy)? Share an example.',
-    'takeaway': 'How often do you order a takeaway, and what influences that choice (price, time, taste)?',
-    'processed': 'In your routine, when do you turn to processed foods, and when do you avoid them? Explain with examples.',
-    'perishable': 'Which perishable items do you buy weekly, and how do you store them to keep them fresh?',
-    'wholesome': 'Describe a wholesome breakfast or dinner that makes you feel good. What makes it feel wholesome?',
-    'organic': 'Do you pick organic produce for some items but not others? Which ones and why?',
-    'nutritious': 'Recommend a quick yet nutritious snack to a busy friend. What makes it a smart choice?',
-    'consume': 'Do people in your circle consume too much sugar or salt? How do you notice it day to day?',
-    'to be tempted': 'When are you most tempted to buy snacks you don\'t need? What helps you resist?',
-    'to reduce': 'If you wanted to reduce late-night snacking, what practical steps would you try first?',
-    'to sample': 'Tell me about a time you sampled a new dish or cuisine. What stood out to you?',
+    'diet': 'How has your diet changed over the years, and what factors influenced those changes?',
+    'junk food': 'Why do you think some people prefer junk food even when they know it\'s unhealthy?',
+    'whole food': 'Do you think choosing whole foods makes a noticeable difference to health or energy? Why?',
+    'food security': 'In your view, what are the main causes of weak food security in some communities?',
+    'takeaway': 'How often do you order a takeaway, and what usually drives that decision?',
+    'processed': 'What are the advantages and disadvantages of relying on processed foods in busy lives?',
+    'perishable': 'Which perishable foods do you buy regularly, and how do you make sure they don\'t go to waste?',
+    'wholesome': 'Describe a wholesome meal you enjoy. Why does it make you feel good?',
+    'organic': 'Do you prefer organic products in certain cases? Which ones and why?',
+    'nutritious': 'Can convenience food be genuinely nutritious in your experience? Give examples.',
+    'consume': 'Do people around you consume too much sugar or salt? What habits lead to that?',
+    'to be tempted': 'When are you most tempted to buy snacks you don\'t need, and how do you deal with that?',
+    'to reduce': 'If you wanted to reduce late-night snacking, what practical steps would you take first?',
+    'to sample': 'Tell me about a time you sampled a new dish or cuisine. What did you think of it?',
     'to digest': 'After a heavy meal, what helps you digest comfortably? Share your routine.'
   };
 

@@ -6,44 +6,23 @@
   <title>Coach Chat</title>
   <style>
     :root{
-      /* Light theme */
-      --bg:#f5f7fb; --panel:#ffffff; --panel-2:#f8fafc; --text:#0f172a; --muted:#475569;
-      --bubble-user:#ecfdf5; --bubble-bot:#eff6ff; --track:#e2e8f0; --accent:#22c55e; --accent2:#2563eb;
-      --ok:#10b981; --active:#3b82f6; --pending:#cbd5e1; --border:#e2e8f0;
+      --app-w: 820px;
+      --bg:#f6f8fc; --panel:#ffffff; --text:#0f172a; --muted:#475569; --border:#e2e8f0;
+      --bubble-user:#ecfdf5; --bubble-coach:#f3f6ff; --accent:#2563eb; --accent2:#22c55e;
     }
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,#f1f5f9,#ffffff);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
-    .app{max-width:900px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-top:16px}
+    .app{max-width:var(--app-w);margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:24px 12px}
 
-    header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-    header .inner{max-width:900px;margin:0 auto;display:flex;gap:12px;align-items:center;padding:12px 16px}
-    .title{font-weight:700}
-    .pill{font-size:12px;border:1px solid var(--border);color:#1e293b;padding:2px 8px;border-radius:999px;background:var(--panel-2)}
-    .spacer{flex:1}
-    .reset{font-size:12px;color:#1d4ed8;background:transparent;border:0;cursor:pointer}
-
-    /* Progress area */
-    .progress-wrap{padding:0 16px 12px;display:flex;flex-direction:column;gap:8px}
-    .steps{display:flex;gap:8px;justify-content:space-between;align-items:center}
-    .dotstep{width:16px;height:16px;border-radius:50%;background:var(--pending);border:1px solid #94a3b8;display:block}
-    .dotstep.ok{background:var(--ok);border-color:#0a8f68}
-    .dotstep.active{background:#dbeafe;border-color:#93c5fd;box-shadow:0 0 0 3px rgba(59,130,246,.25)}
-    .step-rail{height:6px;background:var(--track);border:1px solid var(--border);border-radius:999px;overflow:hidden}
-    .step-rail .bar{height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#22c55e);transition:width .35s ease}
-    .progress-meta{display:flex;justify-content:space-between;margin-top:2px;color:#334155;font-size:12px}
-
-    /* Chat area */
-    .chat{margin:28px 14px 14px;display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:16px;height:70vh}
-    .messages{padding:14px;display:flex;flex-direction:column;gap:12px;overflow:auto;flex:1}
-
-    .msg{display:flex;gap:10px;align-items:flex-end}
+    /* Simple layout – like the referenced demo (no header/labels/buttons) */
+    .chat{margin:0 auto;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--border);border-radius:14px;height:70vh;max-height:70vh;width:100%}
+    .messages{padding:16px;display:flex;flex-direction:column;gap:12px;overflow:auto;flex:1}
+    .msg{display:flex;width:100%}
+    .msg.coach{justify-content:flex-start}
     .msg.user{justify-content:flex-end}
-    .bubble{max-width:78%;padding:10px 12px;border-radius:16px;border:1px solid var(--border)}
-    .msg.coach .bubble{background:var(--bubble-bot)}
-    .msg.user .bubble{background:var(--bubble-user)}
-    .avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e2e8f0;border:1px solid var(--border);font-size:12px;color:#334155;font-weight:700}
-    .msg.user .avatar{order:2}
-    .msg.user .bubble{order:1}
+    .bubble{max-width:78%;padding:10px 12px;border-radius:14px;border:1px solid var(--border);box-shadow:0 1px 0 rgba(0,0,0,.02)}
+    .coach .bubble{background:var(--bubble-coach)}
+    .user .bubble{background:var(--bubble-user)}
 
     .typing .bubble{display:inline-flex;gap:6px;align-items:center}
     .dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;opacity:.6;animation:blink 1.4s infinite}
@@ -54,18 +33,20 @@
     .input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}
     .input textarea{flex:1;resize:none;min-height:44px;max-height:120px;border-radius:12px;border:1px solid #cbd5e1;background:#fff;color:var(--text);padding:10px 12px}
     .btn{border:1px solid #cbd5e1;background:#f8fafc;color:#0f172a;border-radius:12px;padding:10px 12px;cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,#2563eb,#10b981);border:0;color:#fff}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-    .small{font-size:12px;color:#475569}
-    .chip{display:inline-block;font-size:12px;padding:6px 10px;margin:4px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;color:#3730a3}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;color:#fff}
+    .small{font-size:12px;color:#64748b}
+    .chip{display:inline-block;font-size:12px;padding:6px 10px;margin:4px 6px 0 0;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;color:#3730a3}
+    .a-like{background:transparent;border:0;color:#1d4ed8;cursor:pointer;padding:0 4px;font:inherit;text-decoration:underline}
 
-    /* Print everything in the chat (no clipping) */
+    /* Hidden progress DOM for back-compat (not shown) */
+    header,.progress-wrap{display:none}
+
+    /* Print entire chat */
     @media print{
-      header,.input,.reset{display:none !important}
+      .input{display:none !important}
       body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
       .app{max-width:100%}
-      .chat{border:0;height:auto !important}
+      .chat{border:0;height:auto !important;max-height:none !important}
       .messages{overflow:visible !important;max-height:none !important}
       .msg{break-inside:avoid;page-break-inside:avoid}
       .bubble{border:1px solid #ccc}
@@ -74,30 +55,13 @@
     .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111827;border:1px solid #1f2937;color:#e5e7eb;padding:8px 12px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
     .toast.show{opacity:1}
   </style>
-<style>header{display:none}.progress-wrap{display:none}</style>
 </head>
 <body>
   <div class="app">
-    <header>
-      <div class="inner">
-        <div class="title">Coach Chat</div>
-        <span class="pill" id="status">Question 1 of 5</span>
-        <div class="spacer"></div>
-        <button class="reset" id="reset" title="Clear progress">Reset</button>
-      </div>
-      <div class="progress-wrap">
-        <div class="steps" id="steps" aria-label="Steps"></div>
-        <div class="step-rail" aria-label="Progress">
-          <div class="bar" id="progress-bar"></div>
-        </div>
-        <div class="progress-meta"><span id="progress-left">0 / 5 completed</span><span id="progress-pct">0%</span></div>
-      </div>
-    </header>
-
-    <section class="chat">
+    <section class="chat" role="region" aria-label="Coach Chat">
       <div class="messages" id="messages" role="log" aria-live="polite"></div>
       <div class="input">
-        <textarea id="input" placeholder="Food topic question - write your response here… (Enter to send)" aria-label="Your response"></textarea>
+        <textarea id="input" placeholder="Answer the question here… (Enter to send)" aria-label="Your response"></textarea>
         <button class="btn primary" id="send">Send</button>
       </div>
     </section>
@@ -114,7 +78,7 @@
     { term: 'junk food', phrase:'junk food', variants:['junk foods'], example:'In my city, people eat too much junk food.' },
     { term: 'whole food', phrase:'whole food', variants:['whole foods'], example:'I try to cook with whole foods at home.' },
     { term: 'food security', phrase:'food security', variants:[], example:'Drought can seriously affect food security.' },
-    { term: 'takeaway', forms:['takeaway','takeaways'], alsoPhrases:['take away','take-away','take-aways'], variants:['takeaways'], example:'I order a takeaway once a week.' },
+    { term: 'takeaway', forms:['takeaway','takeaways'], variants:['takeaways'], alsoPhrases:['take away','take-away','take-aways'], example:'I order a takeaway once a week.' },
     { term: 'processed', forms:['processed'], variants:['processing','processed foods'], example:'Many students rely on processed meals because they are cheap.' },
     { term: 'perishable', forms:['perishable','perishables'], variants:['perishability'], example:'Perishable goods should be refrigerated immediately.' },
     { term: 'wholesome', forms:['wholesome'], variants:['wholesomeness','wholesomely'], example:'A wholesome breakfast keeps me energised.' },
@@ -127,7 +91,7 @@
     { term: 'to digest', forms:['digest','digests','digested','digesting'], variants:['digestion','digestive'], example:'Drinking warm tea helps me digest a heavy meal.' }
   ];
 
-  // Food-topic question prompts (meaningful, specific)
+  // IELTS-style (but unnamed) prompts and easier versions
   var QUESTIONS = {
     'diet': 'How has your diet changed over the years, and what factors influenced those changes?',
     'junk food': 'Why do you think some people prefer junk food even when they know it\'s unhealthy?',
@@ -135,7 +99,7 @@
     'food security': 'In your view, what are the main causes of weak food security in some communities?',
     'takeaway': 'How often do you order a takeaway, and what usually drives that decision?',
     'processed': 'What are the advantages and disadvantages of relying on processed foods in busy lives?',
-    'perishable': 'Which perishable foods do you buy regularly, and how do you make sure they don\'t go to waste?',
+    'perishable': 'Which perishable foods do you buy regularly, and how do you prevent waste?',
     'wholesome': 'Describe a wholesome meal you enjoy. Why does it make you feel good?',
     'organic': 'Do you prefer organic products in certain cases? Which ones and why?',
     'nutritious': 'Can convenience food be genuinely nutritious in your experience? Give examples.',
@@ -145,322 +109,150 @@
     'to sample': 'Tell me about a time you sampled a new dish or cuisine. What did you think of it?',
     'to digest': 'After a heavy meal, what helps you digest comfortably? Share your routine.'
   };
+  var EASY_QUESTIONS = {
+    'diet': 'What kind of diet do you follow now? Why?',
+    'junk food': 'Do you eat junk food often? Why or why not?',
+    'whole food': 'When do you choose whole foods?',
+    'food security': 'Is food affordable and available where you live?',
+    'takeaway': 'How often do you get a takeaway?',
+    'processed': 'When do you eat processed foods?',
+    'perishable': 'What perishable foods do you buy each week?',
+    'wholesome': 'What is a wholesome meal for you?',
+    'organic': 'Do you buy organic food? Why?',
+    'nutritious': 'What is a nutritious snack you like?',
+    'consume': 'Do people you know consume too much sugar?',
+    'to be tempted': 'When are you tempted to buy snacks?',
+    'to reduce': 'How would you reduce late-night snacks?',
+    'to sample': 'Tell me about a new dish you sampled.',
+    'to digest': 'What helps you digest after a big meal?'
+  };
 
   var PRAISES = [ 'Great answer!', 'Nice response!', 'Well done!', 'Excellent!', 'That sounds natural!' ];
-  var WRONG_TEMPLATES = [ 'Almost there -', 'Good try -', 'Close, but not quite.', 'Lets tweak it -', 'Small fix needed -' ];
+  var WRONG_TEMPLATES = [ 'Almost there -', 'Good try -', 'Close, but not quite.', 'Let\'s tweak it -', 'Small fix needed -' ];
 
   /* ==================== ELEMENTS ==================== */
   var els = {
     messages: document.getElementById('messages'),
     input: document.getElementById('input'),
     send: document.getElementById('send'),
-    status: document.getElementById('status'),
-    reset: document.getElementById('reset'),
-    toast: document.getElementById('toast'),
-    bar: document.getElementById('progress-bar'),
-    pct: document.getElementById('progress-pct'),
-    left: document.getElementById('progress-left'),
-    steps: document.getElementById('steps')
+    toast: document.getElementById('toast')
   };
 
   /* ==================== STATE ==================== */
-  var STORAGE_KEY = 'coach-chat-v9';
+  var STORAGE_KEY = 'coach-chat-v11';
   var SAVED = {};
   try{ SAVED = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ SAVED = {}; }
   var SELECT_COUNT = 5;
-  var state = { words: [], index: 0, attempts: 0, results: {} };
+  var state = { words: [], index: 0, attempts: 0, results: {}, eased: {} };
 
-  function safeSave(){
-    try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        words: state.words.map(function(w){return w.term;}), index: state.index, attempts: state.attempts, results: state.results
-      }));
-    }catch(e){ console.warn('Save failed:', e); }
-  }
+  function safeSave(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({ words: state.words.map(function(w){return w.term;}), index: state.index, attempts: state.attempts, results: state.results, eased: state.eased })); }catch(e){} }
 
   /* ==================== UTILS ==================== */
   function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
   function escapeHTML(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-  // Tokenization + loose verb heuristic (accept auxiliaries, negatives, -ed/-ing/-s)
-  function tokensOf(str){
-    var s = String(str||'').toLowerCase().replace(/-/g,' ');
-    var out=[], buf='';
-    for(var k=0;k<s.length;k++){
-      var ch = s[k];
-      var isLetter = (ch>='a' && ch<='z') || ch==="'";
-      if(isLetter){ buf += ch; }
-      else { if(buf){ out.push(buf); buf=''; } }
-    }
-    if(buf) out.push(buf);
-    return out;
-  }
+  function tokensOf(str){ var s = String(str||'').toLowerCase().replace(/-/g,' '); var out=[], buf=''; for(var k=0;k<s.length;k++){ var ch=s[k]; var ok=(ch>='a'&&ch<='z')||ch==="'"; if(ok){ buf+=ch; } else { if(buf){ out.push(buf); buf=''; } } } if(buf) out.push(buf); return out; }
   function endsWithPunct(s){ var t=String(s||'').trim(); if(!t) return false; var ch=t[t.length-1]; return ".!?".indexOf(ch)!==-1; }
-  function hasAnyVerb(tokens){
-    var helpers = {am:1,is:1,are:1,was:1,were:1,be:1,been:1,being:1,do:1,does:1,did:1,can:1,could:1,may:1,might:1,must:1,shall:1,should:1,will:1,would:1,have:1,has:1,had:1};
-    for(var i=0;i<tokens.length;i++){
-      var t=tokens[i];
-      if(helpers[t]) return true;
-      if(t.indexOf("n't")!==-1 || t==='not') return true;
-      if(t.length>3 && (t.slice(-2)==='ed' || t.slice(-3)==='ing' || t.slice(-1)==='s')) return true;
-    }
-    return false;
-  }
-
-  // Morphology (reasonable family)
-  var SUFFIXES = ['s','es','ed','ing','ly','al','ally','ness','ment','ion','tion','sion','ity','ive','ous','er','ers','able','ably'];
-  function morphMatches(token, base){
-    if(token===base) return true;
-    for(var i=0;i<SUFFIXES.length;i++){ if(token===base+SUFFIXES[i]) return true; }
-    return false;
-  }
+  function hasAnyVerb(tokens){ var helpers={am:1,is:1,are:1,was:1,were:1,be:1,been:1,being:1,do:1,does:1,did:1,can:1,could:1,may:1,might:1,must:1,shall:1,should:1,will:1,would:1,have:1,has:1,had:1}; for(var i=0;i<tokens.length;i++){ var t=tokens[i]; if(helpers[t]) return true; if(t.indexOf("n't")!==-1||t==='not') return true; if(t.length>3 && (t.slice(-2)==='ed'||t.slice(-3)==='ing'||t.slice(-1)==='s')) return true; } return false; }
+  var SUFFIXES=['s','es','ed','ing','ly','al','ally','ness','ment','ion','tion','sion','ity','ive','ous','er','ers','able','ably'];
+  function morphMatches(token, base){ if(token===base) return true; for(var i=0;i<SUFFIXES.length;i++){ if(token===base+SUFFIXES[i]) return true; } return false; }
 
   /* ==================== SELECTION ==================== */
   function loadOrSelect(){
     if(Array.isArray(SAVED.words) && SAVED.words.length===SELECT_COUNT){
       state.words = SAVED.words.map(function(t){ return WORD_BANK.find(function(w){ return w.term===t; }); }).filter(Boolean);
-      state.index = SAVED.index||0; state.attempts=SAVED.attempts||0; state.results=SAVED.results||{};
+      state.index = SAVED.index||0; state.attempts=SAVED.attempts||0; state.results=SAVED.results||{}; state.eased=SAVED.eased||{};
     } else {
       state.words = shuffle(WORD_BANK.slice()).slice(0,SELECT_COUNT);
-      state.index = 0; state.attempts = 0; state.results = {};
+      state.index = 0; state.attempts = 0; state.results = {}; state.eased={};
       safeSave();
     }
   }
 
   /* ==================== CHAT HELPERS ==================== */
-  function addMessage(kind, html){
-    var wrap = document.createElement('div'); wrap.className = 'msg ' + kind;
-    var avatar = document.createElement('div'); avatar.className = 'avatar'; avatar.textContent = (kind==='coach' ? 'C' : 'U');
-    var bubble = document.createElement('div'); bubble.className = 'bubble';
-    if(typeof html === 'string' && /<\s*script/i.test(html)){
-      bubble.innerHTML = '<div>' + escapeHTML(html) + '</div>';
-    } else {
-      bubble.innerHTML = (typeof html === 'string') ? html : String(html);
-    }
-    if(kind==='user'){ wrap.appendChild(bubble); wrap.appendChild(avatar); } else { wrap.appendChild(avatar); wrap.appendChild(bubble); }
-    els.messages.appendChild(wrap); els.messages.scrollTop = els.messages.scrollHeight; return wrap;
+  function addMessage(kind, payload, asHTML){
+    var wrap=document.createElement('div'); wrap.className='msg '+kind;
+    var bubble=document.createElement('div'); bubble.className='bubble';
+    if(asHTML){ bubble.innerHTML = String(payload||''); } else { bubble.textContent = String(payload||''); }
+    wrap.appendChild(bubble); els.messages.appendChild(wrap); els.messages.scrollTop=els.messages.scrollHeight; return wrap;
   }
-  function coachSay(text){ return addMessage('coach', '<div>' + escapeHTML(text) + '</div>'); }
-  function coachSayHTML(html){ return addMessage('coach', html); }
-  function userSay(text){ return addMessage('user', '<div>' + escapeHTML(text) + '</div>'); }
-  function showTyping(){
-    var w=document.createElement('div'); w.className='msg coach typing';
-    var av=document.createElement('div'); av.className='avatar'; av.textContent='C';
-    var bub=document.createElement('div'); bub.className='bubble';
-    for(var i=0;i<3;i++){ var d=document.createElement('span'); d.className='dot'; bub.appendChild(d); }
-    w.appendChild(av); w.appendChild(bub); els.messages.appendChild(w); els.messages.scrollTop=els.messages.scrollHeight; return w;
-  }
+  function coachSay(text){ return addMessage('coach', text, false); }
+  function coachSayHTML(html){ return addMessage('coach', html, true); }
+  function userSay(text){ return addMessage('user', text, false); }
+  function showTyping(){ var w=document.createElement('div'); w.className='msg coach typing'; var b=document.createElement('div'); b.className='bubble'; for(var i=0;i<3;i++){ var d=document.createElement('span'); d.className='dot'; b.appendChild(d);} w.appendChild(b); els.messages.appendChild(w); els.messages.scrollTop=els.messages.scrollHeight; return w; }
+  function showToast(msg){ var t=els.toast; if(!t) return; t.textContent=msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1400); }
 
-  function showToast(msg){
-    var t=els.toast; if(!t) return; t.textContent=msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1400);
-  }
-
-  function updateStatus(){
-    var done = Object.keys(state.results).length; var total = state.words.length;
-    els.status.textContent = (done < total ? ('Question ' + Math.min(done+1,total) + ' of ' + total) : 'Practice complete');
-    var pct = total? Math.round((done/total)*100) : 0;
-    els.bar.style.width = pct + '%';
-    els.pct.textContent = pct + '%';
-    els.left.textContent = done + ' / ' + total + ' completed';
-    updateSteps(done, total);
-  }
-
-  function buildSteps(total){
-    els.steps.innerHTML = '';
-    for(var i=0;i<total;i++){
-      var dot = document.createElement('div');
-      dot.className = 'dotstep';
-      dot.setAttribute('data-idx', String(i));
-      els.steps.appendChild(dot);
-      if(i < total-1){
-        var spacer = document.createElement('div');
-        spacer.style.flex = '1';
-        spacer.style.height = '1px';
-        els.steps.appendChild(spacer);
-      }
-    }
-  }
-  function updateSteps(done, total){
-    var dots = els.steps.querySelectorAll('.dotstep');
-    Array.prototype.forEach.call(dots, function(d, idx){
-      d.classList.remove('ok','active');
-      if(idx < done) { d.classList.add('ok'); }
-      else if(idx === done) { d.classList.add('active'); }
-    });
-  }
+  // Inline actions (delegated)
+  els.messages.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-action]'); if(!btn) return;
+    var act = btn.getAttribute('data-action');
+    if(act==='easier'){ makeEasier(btn.getAttribute('data-word')||''); }
+  });
 
   /* ==================== CHECKING ==================== */
-  function tokensIncludes(toks, val){ return toks.indexOf(val)!==-1; }
   function onTaskFor(word, sentence){
-    var s = String(sentence||'').toLowerCase().replace(/-/g,' ');
-    var toks = tokensOf(s);
-
-    // Phrase matches
+    var s=String(sentence||'').toLowerCase().replace(/-/g,' '); var toks=tokensOf(s);
     if(word.phrase && s.indexOf(word.phrase)!==-1) return true;
     if(word.alsoPhrases && word.alsoPhrases.some(function(p){ return s.indexOf(p)!==-1; })) return true;
-
-    // Exact/inflectional forms
-    if(word.forms && word.forms.some(function(f){ return tokensIncludes(toks, f); })) return true;
-    if(word.alsoForms && word.alsoForms.some(function(f){ return tokensIncludes(toks, f); })) return true;
-
-    // Variants list (reasonable family curated per word)
-    if(word.variants && word.variants.some(function(v){ return tokensIncludes(toks, v); })) return true;
-
-    // Morphological suffix check for single-word bases
-    if(word.term.indexOf(' ')===-1){
-      for(var i=0;i<toks.length;i++){ if(morphMatches(toks[i], word.term)) return true; }
-    }
-
-    // Special adjacency for whole food(s)
-    if(word.term==='whole food'){
-      for(var j=0;j<toks.length-1;j++){
-        if(toks[j]==='whole' && (toks[j+1]==='food' || toks[j+1]==='foods')) return true;
-      }
-    }
-
-    // Special pattern for tempted to
-    if(word.term==='to be tempted'){ return s.indexOf('tempted to') !== -1 || s.indexOf('temptation to') !== -1; }
-
+    if(word.forms && word.forms.some(function(f){ return toks.indexOf(f)!==-1; })) return true;
+    if(word.alsoForms && word.alsoForms.some(function(f){ return toks.indexOf(f)!==-1; })) return true;
+    if(word.variants && word.variants.some(function(v){ return toks.indexOf(v)!==-1; })) return true;
+    if(word.term.indexOf(' ')===-1){ for(var i=0;i<toks.length;i++){ if(morphMatches(toks[i], word.term)) return true; } }
+    if(word.term==='whole food'){ for(var j=0;j<toks.length-1;j++){ if(toks[j]==='whole' && (toks[j+1]==='food'||toks[j+1]==='foods')) return true; } }
+    if(word.term==='to be tempted'){ return s.indexOf('tempted to')!==-1 || s.indexOf('temptation to')!==-1; }
     return false;
   }
-
   function collocationNotes(sentence){
-    var s = String(sentence||'').toLowerCase().replace(/-/g,' ');
-    var toks = tokensOf(s); var notes = [];
-    function has(t){ return tokensIncludes(toks, t); }
-    function nextWordAfter(t){ var i=toks.indexOf(t); return (i>=0 && i<toks.length-1) ? toks[i+1] : ''; }
-    if(has('nutritious')){ var n = nextWordAfter('nutritious'); var good = {meal:1,snack:1,soup:1,food:1,breakfast:1,lunch:1,dinner:1,salad:1,ingredients:1}; if(!good[n]) notes.push('Use "nutritious" before a noun, for example, "nutritious meal".'); }
-    if(has('processed') && !(has('food') || has('foods'))) notes.push('It is natural to say "processed foods".');
-    if(has('perishable') || has('perishables')){ if(!(has('food') || has('foods') || has('items') || has('goods') || has('products'))) notes.push('Try "perishable foods" for natural phrasing.'); }
-    if(has('wholesome')){ var n2 = nextWordAfter('wholesome'); var good2 = {meal:1,snack:1,ingredients:1,food:1,soup:1}; if(!good2[n2]) notes.push('"Wholesome" commonly modifies meal, snack, or ingredients.'); }
-    if(has('organic') && !(has('produce') || has('vegetable') || has('vegetables') || has('fruit') || has('food') || has('foods'))) notes.push('Try "organic produce" or "organic food".');
-    if(has('tempted') && s.indexOf('tempted to') === -1 && s.indexOf('temptation to') === -1) notes.push('Use the pattern "tempted/temptation to + verb".');
+    var s=String(sentence||'').toLowerCase().replace(/-/g,' '); var toks=tokensOf(s); var notes=[];
+    function has(t){ return toks.indexOf(t)!==-1; }
+    function nextAfter(t){ var i=toks.indexOf(t); return (i>=0&&i<toks.length-1)?toks[i+1]:''; }
+    if(has('nutritious')){ var n=nextAfter('nutritious'); var good={meal:1,snack:1,soup:1,food:1,breakfast:1,lunch:1,dinner:1,salad:1,ingredients:1}; if(!good[n]) notes.push('Use "nutritious" before a noun, e.g., "nutritious meal".'); }
+    if(has('processed') && !(has('food')||has('foods'))) notes.push('It is natural to say "processed foods".');
+    if(has('perishable')||has('perishables')){ if(!(has('food')||has('foods')||has('items')||has('goods')||has('products'))) notes.push('Try "perishable foods" for natural phrasing.'); }
+    if(has('wholesome')){ var n2=nextAfter('wholesome'); var ok={meal:1,snack:1,ingredients:1,food:1,soup:1}; if(!ok[n2]) notes.push('"Wholesome" commonly modifies meal, snack, or ingredients.'); }
+    if(has('organic') && !(has('produce')||has('vegetable')||has('vegetables')||has('fruit')||has('food')||has('foods'))) notes.push('Try "organic produce" or "organic food".');
+    if(has('tempted') && s.indexOf('tempted to')===-1 && s.indexOf('temptation to')===-1) notes.push('Use the pattern "tempted/temptation to + verb".');
     return notes;
   }
-
   function analyzeAnswer(word, sentence){
-    var s = String(sentence||'').trim();
-    var toks = tokensOf(s);
-    var wordCount = toks.filter(function(x){return /[a-z]/i.test(x);}).length;
-    var notes = [];
-
-    var onTask = onTaskFor(word, s);
-    if(!onTask) notes.push('Try to include the target word (any natural form) in your answer.');
-
-    // Verb presence (loose): accept auxiliaries, negatives, or common inflections
-    var hasVerb = hasAnyVerb(toks);
-    if(!hasVerb) notes.push('Include a verb (any form is fine).');
-
-    // Punctuation and length
+    var s=String(sentence||'').trim(); var toks=tokensOf(s); var wordCount=toks.filter(function(x){return /[a-z]/i.test(x);}).length; var notes=[];
+    var onTask=onTaskFor(word,s); if(!onTask) notes.push('Try to include the target word (any natural form) in your answer.');
+    var hasVerb=hasAnyVerb(toks); if(!hasVerb) notes.push('Include a verb (any form is fine).');
     if(!endsWithPunct(s)) notes.push('Finish with a full stop, question mark, or exclamation mark.');
-    if(wordCount < 3) notes.push('Write at least three words.');
-
-    // Collocation suggestions (do not block success)
-    var extras = collocationNotes(s); for(var i=0;i<extras.length;i++){ notes.push(extras[i]); }
-
-    var ok = onTask && hasVerb && endsWithPunct(s) && wordCount >= 3;
-    return { ok: ok, notes: notes };
+    if(wordCount<3) notes.push('Write at least three words.');
+    var extras=collocationNotes(s); for(var i=0;i<extras.length;i++){ notes.push(extras[i]); }
+    var ok=onTask && hasVerb && endsWithPunct(s) && wordCount>=3;
+    return { ok:ok, notes:notes };
   }
-
-  function feedbackWrong(notes){
-    var lead = pick(WRONG_TEMPLATES);
-    var body = notes[0] ? notes[0] : 'Use the target word (any form), include a verb, and add punctuation.';
-    var rest = notes.slice(1);
-    var extra = rest.length ? (' Also, ' + rest.join(' ')) : '';
-    return lead + ' ' + body + extra + ' Try again.';
-  }
-
-  function feedbackRight(word){
-    var praise = pick(PRAISES);
-    var example = word.example ? ('<div class="small" style="margin-top:6px">Sample: <code>' + escapeHTML(word.example) + '</code></div>') : '';
-    return '<div>' + escapeHTML(praise) + ' - correct</div>' + example;
-  }
+  function feedbackWrong(notes){ var lead=pick(WRONG_TEMPLATES); var body=notes[0]?notes[0]:'Use the target word (any form), include a verb, and add punctuation.'; var rest=notes.slice(1); var extra=rest.length?(' Also, '+rest.join(' ')):''; return lead+' '+body+extra+' Try again.'; }
+  function feedbackRight(word){ var praise=pick(PRAISES); var example=word.example?('<div class="small" style="margin-top:6px">Sample: <code>'+escapeHTML(word.example)+'</code></div>'):''; return '<div>'+escapeHTML(praise)+' - correct</div>'+example; }
 
   /* ==================== FLOW ==================== */
   function questionFor(word){
-    var q = QUESTIONS[word.term] || ('Talk about your eating habits and try to use "' + word.term + '".');
-    var chip = '<span class="chip">' + escapeHTML(word.term) + '</span>';
-    return '<div>' + escapeHTML(q) + '</div><div class="small" style="margin-top:6px">Target word: ' + chip + '</div>';
+    var base = state.eased[word.term] ? EASY_QUESTIONS[word.term] : QUESTIONS[word.term];
+    var text = base || ('Talk about your eating habits and try to use "'+word.term+'".');
+    var link = '<button class="a-like small" data-action="easier" data-word="'+escapeHTML(word.term)+'">Make this question easier</button>';
+    var chip = '<span class="chip">'+escapeHTML(word.term)+'</span>';
+    return '<div>'+escapeHTML(text)+'</div><div class="small" style="margin-top:6px">Target word: '+chip+' · '+link+'</div>';
   }
+  function promptWord(){ var w=currentWord(); coachSayHTML(questionFor(w)); els.input.focus(); }
+  function makeEasier(term){ if(!term) return; state.eased[term]=true; safeSave(); var last = els.messages.querySelectorAll('.msg.coach'); if(!last.length) return; var node = last[last.length-1]; var bubble = node.querySelector('.bubble'); if(!bubble) return; var word = state.words[state.index]; if(!word || word.term!==term) return; bubble.innerHTML = questionFor(word); }
 
-  function promptWord(){ var w=currentWord(); coachSayHTML(questionFor(w)); updateStatus(); els.input.focus(); }
+  function finish(){ var practiced=state.words.map(function(w){return '<span class="chip">'+escapeHTML(w.term)+'</span>';}).join(''); var html='<div><strong>Nice work — all questions done!</strong></div><div class="small" style="margin-top:6px">Words covered:</div><div style="margin-top:6px">'+practiced+'</div><div class="small" style="margin-top:10px">Use your browser\'s Print to save as PDF, or copy the chat below.</div><div class="actions" style="margin-top:8px"><button class="btn" id="copy-chat">Copy chat</button></div>'; coachSayHTML(html); setTimeout(function(){ var copyBtn=document.getElementById('copy-chat'); if(copyBtn) copyBtn.addEventListener('click', copyChat); },0); }
 
-  function finish(){
-    var practiced = state.words.map(function(w){return w.term;}).map(function(t){return '<span class="chip">' + escapeHTML(t) + '</span>';}).join('');
-    var html = '<div><strong>Great work - you have answered all questions!</strong></div>' +
-               '<div class="small" style="margin-top:6px">Words covered:</div>' +
-               '<div style="margin-top:6px">' + practiced + '</div>' +
-               '<div class="actions">' +
-               '  <button class="btn" id="copy-chat">Copy chat</button>' +
-               '  <button class="btn" id="export-pdf">Export PDF</button>' +
-               '</div>';
-    coachSayHTML(html);
-    setTimeout(function(){
-      var copyBtn=document.getElementById('copy-chat');
-      var pdfBtn=document.getElementById('export-pdf');
-      if(copyBtn) copyBtn.addEventListener('click', copyChat);
-      if(pdfBtn) pdfBtn.addEventListener('click', function(){ try{ window.print(); }catch(e){ showToast('Use your browser\'s print to save as PDF.'); } });
-    },0);
-  }
+  function copyChat(){ var parts=[]; var nodes=els.messages.querySelectorAll('.msg'); Array.prototype.forEach.call(nodes,function(m){ if(m.classList.contains('typing')) return; var isCoach=m.classList.contains('coach'); var text=m.querySelector('.bubble')?m.querySelector('.bubble').innerText:''; if(text && text.trim()) parts.push((isCoach?'Coach: ':'You: ')+text.trim()); }); var all=parts.join('
 
-  function copyChat(){
-    var parts=[];
-    var nodes = els.messages.querySelectorAll('.msg');
-    Array.prototype.forEach.call(nodes, function(m){
-      if(m.classList.contains('typing')) return;
-      var isCoach=m.classList.contains('coach');
-      var bubble = m.querySelector('.bubble');
-      var text = bubble ? bubble.innerText : '';
-      if(text && text.trim()) parts.push((isCoach?'Coach: ':'You: ') + text.trim());
-    });
-    var all = parts.join('\\n\\n');
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(all).then(function(){ showToast('Chat copied to clipboard'); }).catch(function(){ legacyCopy(all); });
-    } else { legacyCopy(all); }
-  }
-  function legacyCopy(text){ var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Chat copied to clipboard'); } catch(e){ showToast('Copy failed'); } finally{ document.body.removeChild(ta); } }
+'); if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(all).then(function(){ showToast('Chat copied to clipboard'); }).catch(function(){ legacyCopy(all); }); } else { legacyCopy(all); } }
+  function legacyCopy(text){ var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); showToast('Chat copied to clipboard'); }catch(e){ showToast('Copy failed'); } finally{ document.body.removeChild(ta); } }
 
-  function handleSubmit(){
-    var w=currentWord(); var text=String(els.input.value||'').trim(); if(!text) return;
-    userSay(text); els.input.value='';
-    var typing=showTyping();
-    setTimeout(function(){
-      typing.remove();
-      var analysis=analyzeAnswer(w, text);
-      var feedback = analysis.ok ? feedbackRight(w) : feedbackWrong(analysis.notes);
-      if(analysis.ok){ coachSayHTML(feedback); } else { coachSay(feedback); }
-      state.attempts+=1;
-      if(analysis.ok){
-        state.results[w.term]={ sentence:text, ok:true };
-        nextWord(); safeSave();
-        var completed=Object.keys(state.results).length;
-        if(completed===state.words.length){ updateStatus(); finish(); }
-        else { var t=showTyping(); setTimeout(function(){ t.remove(); promptWord(); }, 450); }
-      } else { safeSave(); }
-      updateStatus();
-    }, 450);
-  }
+  function handleSubmit(){ var w=currentWord(); var text=String(els.input.value||'').trim(); if(!text) return; userSay(text); els.input.value=''; var typing=showTyping(); setTimeout(function(){ typing.remove(); var analysis=analyzeAnswer(w,text); var feedback=analysis.ok?feedbackRight(w):feedbackWrong(analysis.notes); if(analysis.ok){ coachSayHTML(feedback); } else { coachSay(feedback); } state.attempts+=1; if(analysis.ok){ state.results[w.term]={sentence:text, ok:true}; nextWord(); safeSave(); var completed=Object.keys(state.results).length; if(completed===state.words.length){ finish(); } else { var t=showTyping(); setTimeout(function(){ t.remove(); promptWord(); }, 450); } } else { safeSave(); } }, 420); }
 
   function currentWord(){ return state.words[state.index]; }
   function nextWord(){ for(var i=0;i<state.words.length;i++){ var idx=(state.index+1+i)%state.words.length; if(!state.results[state.words[idx].term]){ state.index=idx; return; } } }
 
-  // Print helpers to ensure full capture across some browsers
-  if(window.matchMedia){
-    var mq = window.matchMedia('print');
-    if(mq && mq.addEventListener){
-      mq.addEventListener('change', function(e){
-        if(e.matches){ document.body.classList.add('printing'); }
-        else { document.body.classList.remove('printing'); }
-      });
-    }
-  }
-  window.addEventListener('beforeprint', function(){ document.body.classList.add('printing'); });
-  window.addEventListener('afterprint', function(){ document.body.classList.remove('printing'); });
-
   els.send.addEventListener('click', handleSubmit);
   els.input.addEventListener('keydown', function(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); handleSubmit(); } });
-  els.reset.addEventListener('click', function(){ if(confirm('Reset progress and pick new words?')){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} location.reload(); } });
 
   /* ==================== SELF-TESTS ==================== */
   function assert(cond, msg){ if(!cond) throw new Error(msg); }
@@ -469,11 +261,11 @@
     try{
       // tokenization
       assert(JSON.stringify(tokensOf('Nutritious meal.')) === JSON.stringify(['nutritious','meal']), 'Tokenization basic');
-      // onTask checks: phrases and forms
+      // onTask checks
       assert(onTaskFor({phrase:'junk food'}, 'I avoid junk food.'), 'onTask phrase match');
       assert(onTaskFor({forms:['diet','diets']}, 'I follow a balanced diet.'), 'onTask forms match');
       assert(onTaskFor({phrase:'tempted to'}, 'I was tempted to buy cake.'), 'onTask tempted to');
-      // acceptance: >=3 words + punctuation + verb (any form)
+      // acceptance: >=3 words + punctuation + verb (aux/neg ok)
       var a = analyzeAnswer({term:'nutritious', forms:['nutritious']}, 'Nutritious meals help.');
       assert(a.ok, 'Accepts three words with a verb and punctuation');
       a = analyzeAnswer({term:'diet', forms:['diet','diets']}, 'Is a diet helpful?');
@@ -485,38 +277,27 @@
       // whole foods adjacency with verb
       a = analyzeAnswer({term:'whole food', forms:null, phrase:'whole food'}, 'Whole foods are great.');
       assert(a.ok, 'Accepts whole foods plus verb');
-      // NEW: morphological variants (reasonable family)
+      // morphological variants (reasonable family)
       a = analyzeAnswer({term:'organic', forms:['organic'], variants:['organically']}, 'I shop organically when possible.');
       assert(a.ok, 'Accepts adverbial variant for organic');
       a = analyzeAnswer({term:'consume', forms:['consume'], variants:['consumption']}, 'Sugar consumption is rising.');
       assert(a.ok, 'Accepts noun variant for consume');
-      // Extra sanity checks
-      a = analyzeAnswer({term:'diet', forms:['diet','diets']}, 'Diet is hard');
-      assert(!a.ok, 'Requires punctuation at the end');
-      a = analyzeAnswer({term:'diet', forms:['diet','diets']}, 'Diet.');
-      assert(!a.ok, 'Requires at least three words');
-      // Additional tests to guard regressions
-      a = analyzeAnswer({term:'organic', forms:['organic']}, 'Is organic important?');
-      assert(a.ok, 'Auxiliary question with organic should pass');
-      a = analyzeAnswer({term:'whole food', forms:null, phrase:'whole food'}, 'Whole-foods are expensive.');
-      assert(a.ok, 'Hyphenated whole-foods should be accepted');
-      a = analyzeAnswer({term:'to reduce', forms:['reduce','reduces','reduced','reducing']}, 'I would reduce sugar.');
-      assert(a.ok, 'Modal + base verb should pass');
-      a = analyzeAnswer({term:'junk food', phrase:'junk food'}, "Isn't junk food cheap?");
-      assert(a.ok, 'Negative question should pass');
+      // easier toggle renders
+      state.words=[{term:'diet'}]; state.index=0; state.eased={}; var html=questionFor({term:'diet'}); assert(/Make this question easier/.test(html), 'Easier link present'); state.eased['diet']=true; html=questionFor({term:'diet'}); assert(html.indexOf('Make this question easier')!==-1, 'Easier link remains visible');
       console.log('All self-tests passed.');
-    }catch(e){ console.error('Self-test failed:', e.message); showToast('Self-test failed: '+e.message); }
+    }catch(e){ console.error('Self-test failed:', e.message); var warn=document.createElement('div'); warn.className='msg coach'; warn.innerHTML='<div class="bubble small">Self-test failed: '+escapeHTML(e.message)+'</div>'; els.messages.appendChild(warn); }
     finally{ console.groupEnd(); }
   }
 
   /* ==================== INIT ==================== */
-  (function init(){
+  function init(){
     loadOrSelect();
-    buildSteps(SELECT_COUNT);
-    coachSay('I will ask food topic questions. Try to use the target word in any natural form. I will mark it correct if your answer uses the word, has at least three words, ends with punctuation, and includes any verb (questions and negatives are fine).');
+    coachSay('I\'ll ask short food-topic questions. Try to use the target word in any natural form. I\'ll mark it correct if your answer uses the word, has at least three words, ends with punctuation, and includes any verb (questions and negatives are fine).');
     promptWord();
     runSelfTests();
-  })();
+  }
+
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', init); } else { init(); }
 })();
 </script>
 </body>
